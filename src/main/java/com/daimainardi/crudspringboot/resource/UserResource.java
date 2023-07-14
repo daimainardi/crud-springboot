@@ -1,6 +1,6 @@
-package com.daimainardi.crudspringboot.resources;
+package com.daimainardi.crudspringboot.resource;
 
-import com.daimainardi.crudspringboot.entities.User;
+import com.daimainardi.crudspringboot.entity.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
