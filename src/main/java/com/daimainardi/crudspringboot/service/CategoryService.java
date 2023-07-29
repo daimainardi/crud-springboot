@@ -2,24 +2,26 @@ package com.daimainardi.crudspringboot.service;
 
 import com.daimainardi.crudspringboot.entity.Category;
 import com.daimainardi.crudspringboot.repository.CategoryRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.daimainardi.crudspringboot.service.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CategoryService {
-    @Autowired
-    private CategoryRepository repository;
+
+    private final CategoryRepository repository;
+
+    public CategoryService(CategoryRepository repository) {
+        this.repository = repository;
+    }
 
     public List<Category> findAll() {
         return repository.findAll();
     }
 
     public Category findById(Long id) {
-        Optional<Category> obj = repository.findById(id);
-        return obj.get();
+        return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
 }

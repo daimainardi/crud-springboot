@@ -5,41 +5,39 @@ import com.daimainardi.crudspringboot.repository.UserRepository;
 import com.daimainardi.crudspringboot.service.exception.DatabaseException;
 import com.daimainardi.crudspringboot.service.exception.ResourceNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserService {
-    @Autowired
-    private UserRepository repository;
+
+    private final UserRepository repository;
+
+    public UserService(UserRepository repository) {
+        this.repository = repository;
+    }
 
     public List<User> findAll() {
         return repository.findAll();
     }
 
     public User findById(Long id) {
-        //return repository.findById(id).get();
-        Optional<User> obj = repository.findById(id);
-        return obj.orElseThrow(() -> new ResourceNotFoundException(id));
+        return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
-    public User insert(User obj) {
-        return repository.save(obj);
+    public User insert(User user) {
+        return repository.save(user);
     }
 
     public void delete(Long id) {
         try {
             repository.deleteById(id);
-        }
-        catch (EmptyResultDataAccessException e){
+        } catch (EmptyResultDataAccessException e) {
             throw new ResourceNotFoundException(id);
-        }
-        catch (DataIntegrityViolationException e){
+        } catch (DataIntegrityViolationException e) {
             throw new DatabaseException(e.getMessage());
         }
     }
@@ -49,8 +47,7 @@ public class UserService {
             User entity = repository.getReferenceById(id);
             updateData(entity, obj);
             return repository.save(entity);
-        }
-        catch (EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             throw new ResourceNotFoundException(id);
         }
     }

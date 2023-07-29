@@ -2,24 +2,27 @@ package com.daimainardi.crudspringboot.service;
 
 import com.daimainardi.crudspringboot.entity.Order;
 import com.daimainardi.crudspringboot.repository.OrderRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.daimainardi.crudspringboot.service.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class OrderService {
-    @Autowired
-    private OrderRepository repository;
+
+    private final OrderRepository repository;
+
+    public OrderService(OrderRepository repository) {
+        this.repository = repository;
+    }
 
     public List<Order> findAll() {
         return repository.findAll();
     }
 
     public Order findById(Long id) {
-        Optional<Order> obj = repository.findById(id);
-        return obj.get();
+        return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
+
     }
 
 }

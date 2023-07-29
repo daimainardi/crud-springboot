@@ -1,10 +1,7 @@
 package com.daimainardi.crudspringboot.resource;
 
 import com.daimainardi.crudspringboot.entity.Category;
-import com.daimainardi.crudspringboot.entity.User;
 import com.daimainardi.crudspringboot.service.CategoryService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,18 +13,21 @@ import java.util.List;
 @RequestMapping(value = "/categories")
 public class CategoryResource {
 
-    @Autowired
-    private CategoryService service;
+    private final CategoryService service;
+
+    public CategoryResource(CategoryService service) {
+        this.service = service;
+    }
 
     @GetMapping
-    public ResponseEntity<List<Category>> findAll() {
-        List<Category> list = service.findAll();
-        return ResponseEntity.ok().body(list);
+    public List<Category> findAll() {
+        return service.findAll();
+
     }
+
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Category> findById(@PathVariable Long id){
-        Category obj = service.findById(id);
-        return ResponseEntity.ok().body(obj);
+    public Category findById(@PathVariable Long id) {
+        return service.findById(id);
     }
 
 }

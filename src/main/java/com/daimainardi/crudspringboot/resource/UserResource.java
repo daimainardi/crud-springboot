@@ -2,50 +2,45 @@ package com.daimainardi.crudspringboot.resource;
 
 import com.daimainardi.crudspringboot.entity.User;
 import com.daimainardi.crudspringboot.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
 
 @RestController
 @RequestMapping(value = "/users")
 public class UserResource {
 
-    @Autowired
-    private UserService service;
+    private final UserService service;
+
+    public UserResource(UserService service) {
+        this.service = service;
+    }
 
     @GetMapping
-    public ResponseEntity<List<User>> findAll() {
-        List<User> list = service.findAll();
-        return ResponseEntity.ok().body(list);
+    public List<User> findAll() {
+        return service.findAll();
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<User> findById(@PathVariable Long id) {
-        User obj = service.findById(id);
-        return ResponseEntity.ok().body(obj);
+    public User findById(@PathVariable Long id) {
+        return service.findById(id);
     }
 
     @PostMapping
-    public ResponseEntity<User> insert(@RequestBody User obj) {
-        obj = service.insert(obj);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(obj.getId()).toUri();
-        return ResponseEntity.created(uri).body(obj);
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public User insert(@RequestBody User user) {
+        return service.insert(user);
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
         service.delete(id);
-        return ResponseEntity.noContent().build();
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<User> update(@PathVariable Long id, @RequestBody User obj) {
-        obj = service.update(id,obj);
-        return ResponseEntity.ok().body(obj);
+    public User update(@PathVariable Long id, @RequestBody User user) {
+        return service.update(id, user);
     }
 }

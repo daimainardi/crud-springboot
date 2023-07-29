@@ -1,11 +1,7 @@
 package com.daimainardi.crudspringboot.resource;
 
 import com.daimainardi.crudspringboot.entity.Product;
-import com.daimainardi.crudspringboot.entity.User;
 import com.daimainardi.crudspringboot.service.ProductService;
-import com.daimainardi.crudspringboot.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,18 +13,20 @@ import java.util.List;
 @RequestMapping(value = "/products")
 public class ProductResource {
 
-    @Autowired
-    private ProductService service;
+    private final ProductService service;
+
+    public ProductResource(ProductService service) {
+        this.service = service;
+    }
 
     @GetMapping
-    public ResponseEntity<List<Product>> findAll() {
-        List<Product> list = service.findAll();
-        return ResponseEntity.ok().body(list);
+    public List<Product> findAll() {
+        return service.findAll();
     }
+
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Product> findById(@PathVariable Long id){
-        Product obj = service.findById(id);
-        return ResponseEntity.ok().body(obj);
+    public Product findById(@PathVariable Long id) {
+        return service.findById(id);
     }
 
 }
